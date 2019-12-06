@@ -9,7 +9,7 @@ def scatter(
     color=None,
     facealpha=0.8,
     edgealpha=1,
-    size=5,
+    size=4,
     edgewidth=0.75,
     ax=None,
     **kwargs

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pymc3 as pm
 
-from scatter import scatter
+from myplotlib.plots import scatter
 
 
 def lm(
