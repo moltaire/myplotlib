@@ -15,9 +15,8 @@ def lm(
     credible_interval=0.95,
     ax=None,
     bandalpha=0.6,
-    scatterfacealpha=0.5,
-    scatteredgealpha=0.5,
-    **scatter_kws
+    scatter_kws={},
+    **kwargs
 ):
     """Make a custom linear model plot with confidence bands.
 
@@ -26,6 +25,9 @@ def lm(
         y (array like): y values
         trace (pymc3.MultiTrace, optional): GLM trace from PyMC3.
         ax (matplotlib.axis, optional): Axis to plot on. Defaults to current axis.
+        bandalpha (float, optional): Opacity level of confidence band.
+        scatter_kws (dict, optional): Dictionary of keyword arguments passed onto `scatter`.
+        **kwargs: Keyword arguments passed onto plot of regression line.
 
     Returns:
         matplotlib.axis: Axis with the violinplot.
@@ -42,8 +44,6 @@ def lm(
         y,
         color=color,
         ax=ax,
-        facealpha=scatterfacealpha,
-        edgealpha=scatteredgealpha,
         **scatter_kws
     )
 
@@ -60,7 +60,7 @@ def lm(
     xs = np.linspace(np.min(x), np.max(x), 100)
     intercept = summary.loc["Intercept", "mean"]
     beta = summary.loc["x", "mean"]
-    ax.plot(xs, intercept + beta * xs, color=color, zorder=4)
+    ax.plot(xs, intercept + beta * xs, color=color, zorder=4, **kwargs)
 
     # Plot posterior predictive credible region band
     intercept_samples = trace.get_values("Intercept")
@@ -69,7 +69,13 @@ def lm(
     ypred_lower = np.quantile(ypred, (1 - credible_interval) / 2, axis=1)
     ypred_upper = np.quantile(ypred, 1 - (1 - credible_interval) / 2, axis=1)
     ax.fill_between(
-        xs, ypred_lower, ypred_upper, color=color, zorder=3, alpha=bandalpha, linewidth=0
+        xs,
+        ypred_lower,
+        ypred_upper,
+        color=color,
+        zorder=1,
+        alpha=bandalpha,
+        linewidth=0,
     )
 
     return ax, trace, summary
