@@ -2,7 +2,7 @@
 
 My custom matplotlib stuff. I got inspired to do this by [this blogpost](https://colcarroll.github.io/yourplotlib/) and this [PyData Talk](https://www.youtube.com/watch?v=NV4Y75ZUDJA).
 
-Work in progress.
+Work in progress. Some demos can be found in the [gallery notebook](https://github.com/moltaire/myplotlib/blob/master/gallery.ipynb).
 
 Currently included:
 
