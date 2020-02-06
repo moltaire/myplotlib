@@ -8,6 +8,10 @@ This is very much a work in progress. See the [gallery notebook](https://github.
 
 Currently included:
 
+## Histogram
+
+![histogram](examples/histogram.png)
+
 ## Violin plot
 
 ![violin](examples/violin.png)
