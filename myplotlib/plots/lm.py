@@ -30,7 +30,7 @@ def lm(
         **kwargs: Keyword arguments passed onto plot of regression line.
 
     Returns:
-        matplotlib.axis: Axis with the violinplot.
+        matplotlib.axis: Axis with the linear model plot.
     """
     if ax is None:
         ax = plt.gca()
