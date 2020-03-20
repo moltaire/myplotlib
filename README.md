@@ -24,6 +24,10 @@ Currently included:
 
 ![lm](examples/lm.png)
 
+## Factorial heatmap
+
+![factorial](examples/factorial_heatmap.png)
+
 ## Utilities
 
 ### Subplot labelling
