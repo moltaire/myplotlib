@@ -37,3 +37,9 @@ Currently included:
 ### Annotation
 
 ![annotation](examples/hTextLine.png)
+
+### Axis breaking
+
+**Note that this is purely visual, and does not change the actual plotted data**. I use it to better communicate if I set limits so that 0 is excluded from the range of values, but still want the axis origin to be labelled 0.
+
+![axis breaking](examples/breakAxes.png)

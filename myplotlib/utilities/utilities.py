@@ -3,6 +3,7 @@
 This script contains plot utilities
 """
 
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cycler
 import string
@@ -114,3 +115,101 @@ def label_axes(fig, labels=None, loc=None, **kwargs):
         loc = (-0.3, 1)
     for ax, lab in zip(fig.axes, labels):
         ax.annotate(lab, xy=loc, xycoords="axes fraction", **kwargs)
+
+
+def break_after_nth_tick(ax, n, axis="x", occHeight=None, occWidth=None, where=0.5):
+    """Visually break an axis x or y spine after the nth tick.
+    Places a white occluding box and black diagonals onto the axis.
+    Axis ticklabels must be changed manually.
+
+    Parameters
+    ----------
+    ax : matplotlib.axis
+        Axis object to plot on
+    n : int
+        Index of tick after which the break should be made
+    axis : str, optional
+        must be "x" or "y", by default "x"
+    occHeight : float, optional
+        Height of the occluding box, by default a third of the space between ticks
+    occWidth : float, optional
+        Width of the occluding box, by default a third of the space between ticks
+    where : float, optional
+        Fine tuning of occluder position between ticks, by default 0.5 (right in the middle)
+    
+    Returns
+    -------
+    matplotlib.axis
+        Axis object with occluder
+
+    Raises
+    ------
+    ValueError
+        If axis keyword not in ['x', 'y']
+    """
+    # Save current x and y limits
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    # Determine occluder position
+    if axis == "x":
+        occPos = (
+            ax.get_xticks()[n] + where * (ax.get_xticks()[n + 1] - ax.get_xticks()[n]),
+            ylim[0],
+        )
+        if occHeight is None:
+            occHeight = 1 / 10 * (ax.get_yticks()[n + 1] - ax.get_yticks()[n])
+        if occWidth is None:
+            occWidth = 1 / 3 * (ax.get_xticks()[n + 1] - ax.get_xticks()[n])
+    elif axis == "y":
+        occPos = (
+            xlim[0],
+            ax.get_yticks()[n] + where * (ax.get_yticks()[n + 1] - ax.get_yticks()[n]),
+        )
+        if occHeight is None:
+            occHeight = 1 / 3 * (ax.get_yticks()[n + 1] - ax.get_yticks()[n])
+        if occWidth is None:
+            occWidth = 1 / 10 * (ax.get_xticks()[n + 1] - ax.get_xticks()[n])
+    else:
+        raise ValueError(f"'which' must be 'x' or 'y' (is {which})")
+
+    # Build occlusion rectangles
+    occBox = matplotlib.patches.Rectangle(
+        (occPos[0] - occWidth / 2, occPos[1] - occHeight / 2),
+        width=occWidth,
+        height=occHeight,
+        color="white",
+        clip_on=False,
+        zorder=8,
+    )
+    ax.add_patch(occBox)
+
+    # Breaker lines
+    if axis == "x":
+        ax.scatter(
+            x=[occPos[0] - occWidth / 2, occPos[0] + occWidth / 2],
+            y=[ylim[0], ylim[0]],
+            marker=(2, 0, -45),
+            color="black",
+            s=18,
+            linewidth=0.75,
+            clip_on=False,
+            zorder=9,
+        )
+    elif axis == "y":
+        ax.scatter(
+            x=[xlim[0], xlim[0]],
+            y=[occPos[1] - occHeight / 2, occPos[1] + occHeight / 2],
+            marker=(2, 0, -45),
+            color="black",
+            s=18,
+            linewidth=0.75,
+            clip_on=False,
+            zorder=9,
+        )
+
+    # Restore x and y limits
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
+    return ax
