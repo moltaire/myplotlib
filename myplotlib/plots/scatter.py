@@ -45,6 +45,8 @@ def scatter(
         clip_on=False,
         **kwargs
     )
-    scatterArtists[0].set_markeredgecolor((0, 0, 0, edgealpha))  # change edge to solid black
+    scatterArtists[0].set_markeredgecolor(
+        (0, 0, 0, edgealpha)
+    )  # change edge to solid black
 
     return ax

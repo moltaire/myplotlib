@@ -1,15 +1,9 @@
 # /usr/bin/python
 
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 
-def hist(
-    x,
-    ax=None,
-    **kwargs
-):
+def hist(x, ax=None, **kwargs):
     """Make a custom histogram.
 
     Args:
@@ -23,6 +17,6 @@ def hist(
     if ax is None:
         ax = plt.gca()
 
-    ax.hist(x, linewidth=0.75, edgecolor='white', **kwargs)
-    
+    ax.hist(x, linewidth=0.75, edgecolor="white", **kwargs)
+
     return ax

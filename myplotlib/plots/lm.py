@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pymc3 as pm
 
-from myplotlib.plots import scatter
+from myplotlib.plots.scatter import scatter
 
 
 def lm(
@@ -39,13 +39,9 @@ def lm(
     color = next(ax._get_lines.prop_cycler)["color"]
 
     # Scatter
-    ax = scatter(
-        x,
-        y,
-        color=color,
-        ax=ax,
-        **scatter_kws
-    )
+
+    print(scatter)
+    ax = scatter(x, y, color=color, ax=ax, **scatter_kws)
 
     # Run GLM in PyMC3
     if trace is None:
