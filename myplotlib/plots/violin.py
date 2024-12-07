@@ -6,7 +6,7 @@ from seaborn import violinplot
 
 
 def violin(
-    data, value_name="value", violin_width=0.8, box_width=0.1, palette=None, ax=None
+    data, value_name="value", violin_width=0.8, box_width=0.1, color=None, ax=None
 ):
     """Make a custom violinplot, with nice inner boxplot.
 
@@ -28,18 +28,24 @@ def violin(
         data.columns.name = "variable"
     data_long = pd.melt(data, value_name=value_name)
 
+    if color is None:
+        hue = data.columns.name
+    else:
+        hue = None
+
     # Violinplot
     violinplot(
         x=data.columns.name,
         y=value_name,
         data=data_long,
-        palette=palette,
+        hue=hue,
         linewidth=0,
         inner=None,
-        scale="width",
+        density_norm="width",
         width=violin_width,
         saturation=1,
         ax=ax,
+        color=color,
     )
 
     # Boxplot
