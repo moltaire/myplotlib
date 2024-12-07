@@ -1,25 +1,31 @@
 import numpy as np
-import pymc3 as pm
-import theano.tensor as tt
 
 
 def bms(L, **sample_kwargs):
     """This function computes the exceedance probabilities (xp)
     and expected relative frequencies (r) from an array of log-evidences.
-    
+
     Args:
         L (numpy.ndarray): Array of model log-evidences (higher is better fit).
             Array shape should be (K models; N subjects)
 
         **sample_kwargs: Additional arguments to the pymc.sample function.
             Currently `cores=1` seems to be necessary.
-    
+
     Returns:
         dict: Dictionary with values xp and r.
 
     Reference:
         Stephan, K. E., Penny, W. D., Daunizeau, J., Moran, R. J., & Friston, K. J. (2009). Bayesian model selection for group studies. Neuroimage, 46(4), 1004-1017.
     """
+
+    try:
+        import pymc3 as pm
+        import theano.tensor as tt
+    except ImportError:
+        raise ImportError(
+            "The 'bms' currently requires the 'pymc3' and 'theano' packages. "
+        )
 
     K, N = L.shape
 
