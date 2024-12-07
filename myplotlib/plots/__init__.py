@@ -1,19 +1,21 @@
 from .factorial import factorial_heatmap
 from .hist import hist
+from .interaction import interaction
+from .lm import lm
+from .model_recovery import model_recovery
+from .pair import pair
+from .raincloud import raincloud
 from .scatter import scatter
 from .violin import violin
-from .lm import lm
-from .raincloud import raincloud
-from .interaction import interaction
-from .pair import pair
 
 __all__ = [
-    "violin",
-    "scatter",
-    "hist",
     "factorial_heatmap",
-    "lm",
-    "raincloud",
+    "hist",
     "interaction",
+    "lm",
+    "model_recovery",
     "pair",
+    "raincloud",
+    "scatter",
+    "violin",
 ]
