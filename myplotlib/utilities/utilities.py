@@ -91,7 +91,7 @@ def cm2inch(*tupl):
         return tuple(i / inch for i in tupl)
 
 
-def label_axes(fig, labels=None, loc=None, **kwargs):
+def label_axes(fig, labels=None, loc=None, va="top", **kwargs):
     """
     From https://gist.github.com/tacaswell/9643166
     Walks through axes and labels each.
@@ -112,9 +112,9 @@ def label_axes(fig, labels=None, loc=None, **kwargs):
     # re-use labels rather than stop labeling
     labels = cycle(labels)
     if loc is None:
-        loc = (-0.3, 1)
+        loc = (-0.3, 1.05)
     for ax, lab in zip(fig.axes, labels):
-        ax.annotate(lab, xy=loc, xycoords="axes fraction", **kwargs)
+        ax.annotate(lab, xy=loc, xycoords="axes fraction", va=va, **kwargs)
 
 
 def break_after_nth_tick(ax, n, axis="x", occHeight=None, occWidth=None, where=0.5):
