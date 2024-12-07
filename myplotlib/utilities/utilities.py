@@ -12,13 +12,13 @@ from six.moves import zip
 
 
 def set_mpl_defaults(matplotlib):
-    """This function updates the matplotlib library to adjust 
+    """This function updates the matplotlib library to adjust
     some default plot parameters
 
     Parameters
     ----------
     matplotlib : matplotlib instance
-    
+
     Returns
     -------
     matplotlib
@@ -73,12 +73,12 @@ def cm2inch(*tupl):
 
     Obtained from: https://stackoverflow.com/questions/14708695/
     specify-figure-size-in-centimeter-in-matplotlib/22787457
-    
+
     Parameters
     ----------
     tupl : tuple
         Size of plot in cm
-    
+
     Returns
     -------
     tuple
@@ -136,7 +136,7 @@ def break_after_nth_tick(ax, n, axis="x", occHeight=None, occWidth=None, where=0
         Width of the occluding box, by default a third of the space between ticks
     where : float, optional
         Fine tuning of occluder position between ticks, by default 0.5 (right in the middle)
-    
+
     Returns
     -------
     matplotlib.axis
