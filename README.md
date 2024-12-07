@@ -34,6 +34,12 @@ A combination of different plot types. The inset boxplot displays the confidence
 
 This plot runs a linear regression using `statsmodels` and annotates the plot with intercept $\beta_0$, slope $\beta$, and product-moment correlatio coefficient $r$.
 
+### Interaction plot
+
+![lm](examples/interaction.png)
+
+A line plot with errorbars, split by two categorical variables.
+
 ### Factorial heatmap
 
 ![factorial](examples/factorial_heatmap.png)
