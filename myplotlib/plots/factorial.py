@@ -19,31 +19,61 @@ def factorial_heatmap(
     pad_per_factor=1.5,
     pad_colorbar=0.05,
 ):
-    """Make a factorial heatmap.
+    """
+    Create a heatmap for visualizing interactions between categorical factors and a numerical value.
+
+    This function generates a heatmap where the rows and columns correspond to categorical factors,
+    and the cell values represent a numerical variable. It also includes labeled bars for factor levels
+    along both axes and a colorbar indicating the range of the value variable.
 
     Parameters
     ----------
     df : pd.DataFrame
-        DataFrame containing categorical factors and numerical value variable
-    row_factors : list
-        List of factors determining heatmap rows
-    col_factors : list
-        List of factors determining heatmap columns
+        A pandas DataFrame containing the categorical factor columns and the numerical value variable.
+
+    row_factors : list of str
+        A list of column names in `df` that determine the rows of the heatmap. Each factor corresponds to
+        a categorical variable.
+
+    col_factors : list of str
+        A list of column names in `df` that determine the columns of the heatmap. Each factor corresponds
+        to a categorical variable.
+
     value_var : str
-        Name of the value variable
+        The name of the column in `df` that contains the numerical values to be visualized in the heatmap.
+
     factor_labels : dict, optional
-        Dictionary containing mappings from variable names in the DataFrame to displayed variable names, by default {}
+        A dictionary that maps factor column names to custom labels for display. Default is an empty dictionary.
+
     level_labels : dict, optional
-        Dictionary containing dictionaries for each factor, containing mappings from level names to displayed level names, by default {}
+        A dictionary of dictionaries, each mapping factor level names to custom labels. Default is an empty dictionary.
+
     cmap : str, optional
-        cmap argument passed on to matplotlib.pyplot.imshow, by default "viridis_r". But try "inferno", "magma", ...
-    ax : matplotlib.axis, optional
-        Axis to plot on, by default None
+        The colormap to use for the heatmap. This is passed to `matplotlib.pyplot.imshow`. Default is "viridis_r",
+        but options like "inferno", "magma", and others are available.
+
+    ax : matplotlib.axes.Axes, optional
+        The axes to plot on. If None, the current axes will be used. Default is None.
+
+    ylabel_rotation : float, optional
+        The rotation angle of the y-axis labels. Default is 0 degrees (horizontal).
+
+    xlabel_rotation : float, optional
+        The rotation angle of the x-axis labels. Default is 0 degrees (horizontal).
+
+    pad_label_bar : float, optional
+        The padding between factor labels and the bars marking factor levels. Default is 0.2.
+
+    pad_per_factor : float, optional
+        The vertical or horizontal spacing between factor level bars. Default is 1.5.
+
+    pad_colorbar : float, optional
+        The padding between the heatmap and the colorbar. Default is 0.05.
 
     Returns
     -------
-    matplotlib.axis
-        axis with plot
+    matplotlib.axes.Axes
+        The axes containing the plotted heatmap, including factor labels, factor level bars, and colorbar.
     """
     all_factors = row_factors + col_factors
     default_factor_labels = {factor: factor for factor in all_factors}
