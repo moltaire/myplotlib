@@ -1,6 +1,7 @@
 # /usr/bin/python
 import matplotlib.pyplot as plt
 from matplotlib.colors import colorConverter
+from itertools import cycle
 
 
 def scatter(
@@ -30,7 +31,14 @@ def scatter(
         ax = plt.gca()
 
     if color is None:
-        color = next(ax._get_lines.prop_cycler)["color"]
+        # Ensure there's a color cycler on the Axes
+        if not hasattr(ax, "_prop_cycle") or ax._prop_cycle is None:
+            # Create a new cycle iterator if it doesn't exist
+            prop_cycle = plt.rcParams["axes.prop_cycle"]
+            ax._prop_cycle = cycle(prop_cycle)
+
+        # Get the next color in the cycle
+        color = next(ax._prop_cycle)["color"]
 
     # Solid outlines and translucent faces
     scatterArtists = ax.plot(
