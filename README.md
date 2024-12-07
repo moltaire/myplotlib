@@ -14,6 +14,12 @@ Currently included:
 
 ![histogram](examples/histogram.png)
 
+### Raincloud plot
+
+![raincloud](examples/raincloud.png)
+
+A combination of different plot types. The inset boxplot displays the confidence interval (CI) for the mean, with mean and standard error bars. Means ± SE are shown as a horizontal line with error bars. I stole the idea for this plot from [here](https://doi.org/10.1017/S0033291722001593).
+
 ### Violin plot
 
 ![violin](examples/violin.png)
@@ -26,17 +32,23 @@ Currently included:
 
 ![lm](examples/lm.png)
 
+This plot runs a linear regression using `statsmodels` and annotates the plot with intercept $\beta_0$, slope $\beta$, and product-moment correlatio coefficient $r$.
+
 ### Factorial heatmap
 
 ![factorial](examples/factorial_heatmap.png)
 
+I used this in this [paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010283).
+
 ### Model recovery plot
 
-adapted from
+![model_recovery](examples/model_recovery.png)
+
+This plot is adapted from
 
 - Findling, C., Chopin, N., & Koechlin, E. (2020). Imprecise neural computations as a source of adaptive behaviour in volatile environments. Nature Human Behaviour. https://doi.org/10.1038/s41562-020-00971-z
 
-![model_recovery](examples/model_recovery.png)
+I used this in this [paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010283).
 
 ## Utilities
 
@@ -50,9 +62,9 @@ adapted from
 
 ### Axis breaking
 
-**Note that this is purely visual, and does not change the actual plotted data**. I use it to better communicate if I set limits so that 0 is excluded from the range of values, but still want the axis origin to be labelled 0.
-
 ![axis breaking](examples/breakAxes.png)
+
+**Note that this is purely visual, and does not change the actual plotted data**. I use it to better communicate if I set limits so that 0 is excluded from the range of values, but still want the axis origin to be labelled 0.
 
 ## Stats
 
@@ -61,6 +73,8 @@ adapted from
 Basic, sampling based python implementation of the model selection procedure described in
 
 - Stephan, K. E., Penny, W. D., Daunizeau, J., Moran, R. J., & Friston, K. J. (2009). Bayesian model selection for group studies. NeuroImage, 46(4), 1004–1017. https://doi.org/10.1016/j.neuroimage.2009.03.025
+
+Currently requires `theano` and `pymc3` to be installed. Usage:
 
 `bmsResult = bms(L=L, cores=1)`
 
