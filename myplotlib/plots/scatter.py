@@ -15,17 +15,49 @@ def scatter(
     ax=None,
     **kwargs
 ):
-    """Make a custom scatterplot, with solid outlines and translucent faces.
+    """
+    Create a custom scatter plot with solid outlines and translucent faces.
 
-    Args:
-        x (array like): x values
-        y (array like): y values
-        color (optional): color to use for scatter faces. Defaults to default color.
-        ax (matplotlib.axis, optional): Axis to plot on. Defaults to None.
-        kwargs: Keyword arguments passed on to matplotlib.pyplot.plot
+    This function plots a scatter plot where the data points have solid black outlines and
+    translucent faces. It allows customization of point size, transparency, edge color, and more.
 
-    Returns:
-        matplotlib.axis: Axis with the violinplot.
+    Parameters
+    ----------
+    x : array-like
+        The x-values of the scatter plot.
+    
+    y : array-like
+        The y-values of the scatter plot.
+    
+    color : str, optional
+        The color to use for the face of the scatter points. If None, the default color from 
+        the current color cycle is used. Default is None.
+    
+    facealpha : float, optional
+        The transparency level of the scatter points. A value between 0 (fully transparent) 
+        and 1 (fully opaque). Default is 0.8.
+    
+    edgealpha : float, optional
+        The transparency level of the scatter point edges. A value between 0 (fully transparent) 
+        and 1 (fully opaque). Default is 1.
+    
+    size : int, optional
+        The size of the scatter points. Default is 4.
+    
+    edgewidth : float, optional
+        The width of the scatter point edges. Default is 0.5.
+    
+    ax : matplotlib.axes.Axes, optional
+        The axes to plot the scatter plot on. If None, the current axes are used. Default is None.
+    
+    kwargs : keyword arguments
+        Additional keyword arguments passed on to `matplotlib.pyplot.plot` for customization 
+        of the scatter plot (e.g., `label` for legend, `alpha` for overall transparency, etc.).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes with the scatter plot.
     """
     if ax is None:
         ax = plt.gca()
