@@ -8,22 +8,60 @@ from seaborn import violinplot
 def violin(
     data, value_name="value", violin_width=0.8, box_width=0.1, color=None, ax=None
 ):
-    """Make a custom violinplot, with nice inner boxplot.
+    """
+    Create a custom violin plot with an inner boxplot.
 
-    Args:
-        data (pandas.DataFrame): Data to plot. Each column will be made into one violin.
-        violin_width (float, optional): Width of the violins. Defaults to 0.8.
-        box_width (float, optional): Width of the boxplot. Defaults to 0.1.
-        palette (list, optional): list of colors to use for violins. Defaults to default colors.
-        ax (matplotlib.axis, optional): Axis to plot on. Defaults to None.
+    This function combines a violin plot with an inner boxplot for enhanced visualization.
+    The violins represent the distribution of the data, while the inner boxplot shows
+    the summary statistics (median, quartiles).
 
-    Returns:
-        matplotlib.axis: Axis with the violinplot.
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The data to plot. Each column will be made into one violin.
+
+    value_name : str, optional
+        The name of the variable for the violin plot values. Defaults to "value".
+
+    violin_width : float, optional
+        The width of the violins. Default is 0.8.
+
+    box_width : float, optional
+        The width of the boxplot. Default is 0.1.
+
+    color : str, optional
+        The color to use for the violins. If None, the default seaborn color palette is used. Default is None.
+
+    ax : matplotlib.axes.Axes, optional
+        The axis to plot the violin plot on. If None, the current axis is used. Default is None.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axis with the violin plot and inner boxplot.
+
+    Example
+    -------
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # Example data
+    data = pd.DataFrame({
+        'Model A': np.random.normal(0, 1, 100),
+        'Model B': np.random.normal(1, 1.5, 100),
+        'Model C': np.random.normal(2, 2, 100),
+    })
+
+    # Create a violin plot
+    fig, ax = plt.subplots()
+    violin(data, ax=ax, violin_width=0.9, box_width=0.15, color='lightblue')
+    plt.show()
     """
     if ax is None:
         ax = plt.gca()
 
-    # transform data into long format for seaborn violinplot
+    # Transform data into long format for seaborn violinplot
     if data.columns.name is None:
         data.columns.name = "variable"
     data_long = pd.melt(data, value_name=value_name)
@@ -33,7 +71,7 @@ def violin(
     else:
         hue = None
 
-    # Violinplot
+    # Violin plot
     violinplot(
         x=data.columns.name,
         y=value_name,
