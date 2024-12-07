@@ -1,77 +1,119 @@
-# /usr/bin/python
-
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import pymc3 as pm
-
-from myplotlib.plots.scatter import scatter
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+from scipy.stats import pearsonr
+from myplotlib.utilities.annotation import format_p
 
 
 def lm(
     x,
     y,
-    trace=None,
-    credible_interval=0.95,
     ax=None,
-    bandalpha=0.6,
-    scatter_kws={},
-    **kwargs
+    xbounds=None,
+    ybounds=None,
+    ci_alpha=0.05,
+    color=None,
+    annotation_pos="lower right",
 ):
-    """Make a custom linear model plot with confidence bands.
-
-    Args:
-        x (array like): x values
-        y (array like): y values
-        trace (pymc3.MultiTrace, optional): GLM trace from PyMC3.
-        ax (matplotlib.axis, optional): Axis to plot on. Defaults to current axis.
-        bandalpha (float, optional): Opacity level of confidence band.
-        scatter_kws (dict, optional): Dictionary of keyword arguments passed onto `scatter`.
-        **kwargs: Keyword arguments passed onto plot of regression line.
-
-    Returns:
-        matplotlib.axis: Axis with the linear model plot.
     """
+    Plots a linear regression of two variables, including
+    a confidence band around the regression line and
+    some annotation.
+    """
+    # Set defaults if None given
     if ax is None:
         ax = plt.gca()
+    if color is None:
+        color = ax._get_lines.get_next_color()
+    if xbounds is None:
+        xbounds = [np.min(x), np.max(x)]
+    if ybounds is None:
+        ybounds = [np.min(y), np.max(y)]
 
-    # Determine color (this is necessary so that the scatter and the line have the same color)
-    color = next(ax._get_lines.prop_cycler)["color"]
+    # Run Regression
+    X = sm.add_constant(x)
+    model = sm.OLS(y, X)
+    results = model.fit()
 
-    # Scatter
+    # Regression Estimates
+    intercept, slope = results.params
+    p_values = results.pvalues
 
-    print(scatter)
-    ax = scatter(x, y, color=color, ax=ax, **scatter_kws)
+    # Calculate the Pearson correlation coefficient and its p-value
+    correlation, corr_p_value = pearsonr(x, y)
 
-    # Run GLM in PyMC3
-    if trace is None:
-        df = pd.DataFrame(dict(x=x, y=y))
-        with pm.Model() as glm:
-            pm.GLM.from_formula("y ~ x", data=df)
-            trace = pm.sample()
+    # Predictions and Confidence Intervals
+    x_pred = np.linspace(*xbounds, 100)
+    X_pred = sm.add_constant(x_pred)
+    y_pred = results.predict(X_pred)
+    pred = results.get_prediction(X_pred)
+    pred_summary_frame = pred.summary_frame(alpha=ci_alpha)
 
-    summary = pm.summary(trace)
-
-    # Plot MAP regression line
-    xs = np.linspace(np.min(x), np.max(x), 100)
-    intercept = summary.loc["Intercept", "mean"]
-    beta = summary.loc["x", "mean"]
-    ax.plot(xs, intercept + beta * xs, color=color, zorder=4, **kwargs)
-
-    # Plot posterior predictive credible region band
-    intercept_samples = trace.get_values("Intercept")
-    beta_samples = trace.get_values("x")
-    ypred = intercept_samples + beta_samples * xs[:, None]
-    ypred_lower = np.quantile(ypred, (1 - credible_interval) / 2, axis=1)
-    ypred_upper = np.quantile(ypred, 1 - (1 - credible_interval) / 2, axis=1)
-    ax.fill_between(
-        xs,
-        ypred_lower,
-        ypred_upper,
+    # Data
+    ax.scatter(
+        x,
+        y,
         color=color,
-        zorder=1,
-        alpha=bandalpha,
-        linewidth=0,
+        clip_on=False,
+        zorder=9,
+        lw=0.5,
+        s=12,
+        edgecolor="k",
+        alpha=0.7,
     )
 
-    return ax, trace, summary
+    # Regression Line
+    ax.plot(x_pred, y_pred, lw=1.5, color=color)
+
+    # Confidence Band
+    ax.fill_between(
+        x_pred,
+        pred_summary_frame["mean_ci_lower"],
+        pred_summary_frame["mean_ci_upper"],
+        alpha=0.5,
+        color=color,
+        lw=0,
+    )
+
+    # Annotation
+    annotation_text = (
+        r"$\beta_0$ = " + f"{intercept:.2f} ({format_p(p_values.iloc[0])})\n"
+        r"$\beta$ = " + f"{slope:.2f} ({format_p(p_values.iloc[1])})\n"
+        r"$r$ = " + f"{correlation:.2f} ({format_p(corr_p_value)})"
+    )
+    apos_vertical, apos_horizontal = annotation_pos.split()
+    if apos_vertical == "lower":
+        y = 0.05
+        va = "bottom"
+    elif apos_vertical == "center":
+        y = 0.5
+        va = "center"
+    else:
+        y = 1
+        va = "top"
+    if apos_horizontal == "left":
+        x = 0.05
+        ha = "left"
+    elif apos_horizontal == "center":
+        x = 0.5
+        ha = "center"
+    else:
+        x = 1
+        ha = "right"
+    ax.text(
+        x,
+        y,
+        annotation_text,
+        fontsize=4.5,
+        transform=ax.transAxes,
+        va=va,
+        ha=ha,
+    )
+
+    # Limits
+    ax.set_xlim(xbounds)
+    ax.set_ylim(ybounds)
+    sns.despine()
+
+    return ax
