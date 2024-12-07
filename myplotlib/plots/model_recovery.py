@@ -17,25 +17,58 @@ def model_recovery(
     round_inset_values=2,
     inset_aspect=0.75
 ):
-    """Plots a confusion matrix of model probabilities and a smaller one of exceedance probabilities. This plot is adapted from Findling et al. (Nature Human Behaviour, 2020).
+    """
+    Plots a confusion matrix of model probabilities (mpp) alongside a smaller inset of exceedance probabilities (xp).
+    This plot is adapted from Findling et al. (Nature Human Behaviour, 2020).
 
-    Args:
-        mpp (numpy.array): Array (n_models, n_models) of model probabilities. Each row corresponds to data generated from one model
-        xp (numpy.array): Like `mpp`, but contains exceedance probabilities.
-        model_labels (list): Model labels.
-        ax (matplotlib.axis, optional): Axis to plot on. Defaults to creating a new one.
-        cmap (str, optional): Colormap name. Defaults to "viridis".
-        fontcolor_threshold (float, optional): Value threshold where to switch from `colow_belowthresh` to `color_abovethresh` for value labels in each cell. Defaults to 0.7.
-        color_belowthresh (str, optional): Fontcolor for value labels below `fontcolor_threshold`. Defaults to "white".
-        color_abovethresh (str, optional): Fontcolor for value labels above `fontcolor_threshold`. Defaults to "black".
-        fontsize_main (int, optional): Fontsize of value labels in main plot. Defaults to 5.
-        fontsize_inset (int, optional): Fontsize of value labels in inset xp plot. Defaults to 3.
-        round_main_values (int, optional): Precision of value labels in main plot. Defaults to 2.
-        round_inset_values (int, optional): Precision of value labels in inset xp plot. Defaults to 2.
-        inset_aspect (float, optional): Aspect ratio modifier for inset plot. Somehow matplotlib does not make a square plot if it is set to `"equal"` or `1`. Defaults to 0.75.
+    Parameters
+    ----------
+    mpp : numpy.ndarray
+        A 2D array of shape (n_models, n_models) containing model probabilities. Each row represents data 
+        generated from one model, and the values correspond to the probability of each model given the data.
+    
+    xp : numpy.ndarray
+        A 2D array of shape (n_models, n_models) containing exceedance probabilities. Exceedance probability 
+        indicates the likelihood that a given model outperforms the other models.
+    
+    model_labels : list of str
+        A list of model labels to be displayed on the axes. The length of the list should match the number of models.
+    
+    ax : matplotlib.axes.Axes, optional
+        The axes to plot on. If None, a new axis is created. Default is None.
+    
+    cmap : str, optional
+        The colormap to use for the heatmap. Defaults to "viridis", but other options like "inferno", "plasma", etc. 
+        are supported.
+    
+    fontcolor_threshold : float, optional
+        The value threshold above which the font color for the heatmap values will switch. Default is 0.7.
+    
+    color_belowthresh : str, optional
+        The font color to use for values below the threshold specified by `fontcolor_threshold`. Default is "white".
+    
+    color_abovethresh : str, optional
+        The font color to use for values above the threshold specified by `fontcolor_threshold`. Default is "black".
+    
+    fontsize_main : int, optional
+        The font size for the value labels in the main plot. Default is 5.
+    
+    fontsize_inset : int, optional
+        The font size for the value labels in the inset plot. Default is 3.
+    
+    round_main_values : int, optional
+        The number of decimal places to round the values in the main plot. Default is 2.
+    
+    round_inset_values : int, optional
+        The number of decimal places to round the values in the inset plot. Default is 2.
+    
+    inset_aspect : float, optional
+        The aspect ratio for the inset plot. A value of 1 is square, but setting it to 0.75 improves the layout. Default is 0.75.
 
-    Returns:
-        matplotlib.axis: Axis with inset axis.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axis containing the full plot, including the confusion matrix and inset for exceedance probabilities.
     """
     if ax is None:
         ax = plt.gca()
