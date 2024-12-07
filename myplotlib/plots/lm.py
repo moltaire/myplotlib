@@ -19,7 +19,42 @@ def lm(
     """
     Plots a linear regression of two variables, including
     a confidence band around the regression line and
-    some annotation.
+    annotated regression statistics.
+
+    Parameters
+    ----------
+    x : array-like
+        The independent variable (predictor) for the regression.
+    
+    y : array-like
+        The dependent variable (response) for the regression.
+    
+    ax : matplotlib.axes.Axes, optional
+        The axes to plot on. If None, the current axes will be used. Default is None.
+    
+    xbounds : tuple, optional
+        The lower and upper bounds for the x-axis in the plot. Default is the range of `x`.
+    
+    ybounds : tuple, optional
+        The lower and upper bounds for the y-axis in the plot. Default is the range of `y`.
+    
+    ci_alpha : float, optional
+        The significance level for the confidence intervals around the regression line. 
+        Default is 0.05, which gives 95% confidence intervals.
+    
+    color : str, optional
+        The color to use for the regression line, scatter plot, and confidence band. 
+        If None, the next available color in the current axis will be used. Default is None.
+    
+    annotation_pos : str, optional
+        The position of the regression statistics annotation in the plot, specified as
+        "vertical horizontal", where vertical can be "lower", "center", or "upper", and
+        horizontal can be "left", "center", or "right". Default is "lower right".
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes containing the plotted linear regression, confidence band, and annotation.
     """
     # Set defaults if None given
     if ax is None:
