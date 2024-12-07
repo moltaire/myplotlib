@@ -64,7 +64,7 @@ def raincloud(
         >>>     "B": np.random.normal(0, 1, 100),
         >>>     "C": np.random.normal(0, 1, 100),
         >>> })
-        >>> plotminteri(df)
+        >>> raincloud(df)
     """
     if ax is None:
         ax = plt.gca()
