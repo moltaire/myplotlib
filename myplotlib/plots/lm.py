@@ -118,7 +118,6 @@ def lm(
     )
 
     # Annotation
-    print(p_values)
     annotation_text = (
         r"$\beta_0$ = " + f"{intercept:.2f} ({format_p(p_values[0])})\n"
         r"$\beta$ = " + f"{slope:.2f} ({format_p(p_values[1])})\n"
