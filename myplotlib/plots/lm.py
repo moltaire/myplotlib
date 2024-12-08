@@ -16,47 +16,63 @@ def lm(
     ci_alpha=0.05,
     color=None,
     annotation_pos="lower right",
+    annotate=["b0", "b1", "r"],
 ):
     """
-    Plots a linear regression of two variables, including
-    a confidence band around the regression line and
-    annotated regression statistics.
+    Plots a linear regression of two variables, including a confidence band, regression line,
+    and annotated statistics.
 
     Parameters
     ----------
-    x : array-like
-        The independent variable (predictor) for the regression.
+    x : array-like or pandas.Series
+        The independent variable (predictor) for the regression. If a pandas.Series, its name
+        will be used as the x-axis label.
 
-    y : array-like
-        The dependent variable (response) for the regression.
+    y : array-like or pandas.Series
+        The dependent variable (response) for the regression. If a pandas.Series, its name
+        will be used as the y-axis label.
 
     ax : matplotlib.axes.Axes, optional
         The axes to plot on. If None, the current axes will be used. Default is None.
 
     xbounds : tuple, optional
-        The lower and upper bounds for the x-axis in the plot. Default is the range of `x`.
+        The lower and upper bounds for the x-axis. Default is the range of `x`.
 
     ybounds : tuple, optional
-        The lower and upper bounds for the y-axis in the plot. Default is the range of `y`.
+        The lower and upper bounds for the y-axis. Default is the range of `y`.
 
     ci_alpha : float, optional
-        The significance level for the confidence intervals around the regression line.
-        Default is 0.05, which gives 95% confidence intervals.
+        Significance level for confidence intervals around the regression line.
+        Default is 0.05 (95% confidence intervals).
 
     color : str, optional
-        The color to use for the regression line, scatter plot, and confidence band.
-        If None, the next available color in the current axis will be used. Default is None.
+        Color for the regression line, scatter points, and confidence band.
+        Default is the next available color in the current axis.
 
     annotation_pos : str, optional
-        The position of the regression statistics annotation in the plot, specified as
-        "vertical horizontal", where vertical can be "lower", "center", or "upper", and
-        horizontal can be "left", "center", or "right". Default is "lower right".
+        Position of the annotation in the plot, specified as "vertical horizontal"
+        (e.g., "lower right"). Vertical options: "lower", "center", "upper".
+        Horizontal options: "left", "center", "right". Default is "lower right".
+
+    annotate : list of str, optional
+        List specifying which statistics to include in the annotation. Possible values:
+        - 'b0': Intercept (β₀) with its p-value
+        - 'b1': Slope (β₁) with its p-value
+        - 'r': Pearson correlation coefficient (r) with its p-value
+        Default is ['b0', 'b1', "r"].
 
     Returns
     -------
     matplotlib.axes.Axes
         The axes containing the plotted linear regression, confidence band, and annotation.
     """
+    # Validate annotate argument
+    valid_annotations = {"b0", "b1", "r"}
+    if not set(annotate).issubset(valid_annotations):
+        raise ValueError(
+            f"Invalid annotation type(s) in {annotate}. Valid options are {valid_annotations}."
+        )
+
     # Set defaults if None given
     if ax is None:
         ax = plt.gca()
@@ -67,10 +83,12 @@ def lm(
     if ybounds is None:
         ybounds = [np.min(y), np.max(y)]
 
-    if isinstance(x, pd.core.series.Series):
-        x = x.values
-    if isinstance(y, pd.core.series.Series):
-        y = y.values
+    # Handle pandas.Series and get labels
+    x_label = x.name if isinstance(x, pd.Series) else None
+    y_label = y.name if isinstance(y, pd.Series) else None
+
+    x = x.values if isinstance(x, pd.Series) else x
+    y = y.values if isinstance(y, pd.Series) else y
 
     # Run Regression
     X = sm.add_constant(x)
@@ -91,7 +109,7 @@ def lm(
     pred = results.get_prediction(X_pred)
     pred_summary_frame = pred.summary_frame(alpha=ci_alpha)
 
-    # Data
+    # Scatter Plot
     ax.scatter(
         x,
         y,
@@ -117,44 +135,93 @@ def lm(
         lw=0,
     )
 
-    # Annotation
-    annotation_text = (
-        r"$\beta_0$ = " + f"{intercept:.2f} ({format_p(p_values[0])})\n"
-        r"$\beta$ = " + f"{slope:.2f} ({format_p(p_values[1])})\n"
-        r"$r$ = " + f"{correlation:.2f} ({format_p(corr_p_value)})"
+    # Generate Annotation Text
+    annotation_text = generate_annotation(
+        intercept, slope, p_values, correlation, corr_p_value, annotate
     )
+
+    # Position Annotation
     apos_vertical, apos_horizontal = annotation_pos.split()
     if apos_vertical == "lower":
-        y = 0.05
+        y_pos = 0.05
         va = "bottom"
     elif apos_vertical == "center":
-        y = 0.5
+        y_pos = 0.5
         va = "center"
     else:
-        y = 1
+        y_pos = 1
         va = "top"
+
     if apos_horizontal == "left":
-        x = 0.05
+        x_pos = 0.05
         ha = "left"
     elif apos_horizontal == "center":
-        x = 0.5
+        x_pos = 0.5
         ha = "center"
     else:
-        x = 1
+        x_pos = 1
         ha = "right"
+
     ax.text(
-        x,
-        y,
+        x_pos,
+        y_pos,
         annotation_text,
-        fontsize=4.5,
+        fontsize="xx-small",
         transform=ax.transAxes,
         va=va,
         ha=ha,
     )
 
-    # Limits
+    # Set Labels if Available
+    if x_label:
+        ax.set_xlabel(x_label)
+    if y_label:
+        ax.set_ylabel(y_label)
+
+    # Limits and Final Touches
     ax.set_xlim(xbounds)
     ax.set_ylim(ybounds)
     sns.despine()
 
     return ax
+
+
+def generate_annotation(
+    intercept, slope, p_values, correlation, corr_p_value, annotate
+):
+    """
+    Generate annotation text based on specified statistics.
+
+    Parameters
+    ----------
+    intercept : float
+        The intercept of the regression line.
+
+    slope : float
+        The slope of the regression line.
+
+    p_values : array-like
+        p-values for the regression parameters.
+
+    correlation : float
+        Pearson correlation coefficient.
+
+    corr_p_value : float
+        p-value for the correlation coefficient.
+
+    annotate : list of str
+        List specifying which statistics to include in the annotation.
+
+    Returns
+    -------
+    str
+        The formatted annotation text.
+    """
+    annotations = []
+    if "b0" in annotate:
+        annotations.append(rf"$\beta_0$ = {intercept:.2f} ({format_p(p_values[0])})")
+    if "b1" in annotate:
+        annotations.append(rf"$\beta$ = {slope:.2f} ({format_p(p_values[1])})")
+    if "r" in annotate:
+        annotations.append(rf"$r$ = {correlation:.2f} ({format_p(corr_p_value)})")
+    return "\n".join(annotations)
