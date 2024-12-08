@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
@@ -25,27 +26,27 @@ def lm(
     ----------
     x : array-like
         The independent variable (predictor) for the regression.
-    
+
     y : array-like
         The dependent variable (response) for the regression.
-    
+
     ax : matplotlib.axes.Axes, optional
         The axes to plot on. If None, the current axes will be used. Default is None.
-    
+
     xbounds : tuple, optional
         The lower and upper bounds for the x-axis in the plot. Default is the range of `x`.
-    
+
     ybounds : tuple, optional
         The lower and upper bounds for the y-axis in the plot. Default is the range of `y`.
-    
+
     ci_alpha : float, optional
-        The significance level for the confidence intervals around the regression line. 
+        The significance level for the confidence intervals around the regression line.
         Default is 0.05, which gives 95% confidence intervals.
-    
+
     color : str, optional
-        The color to use for the regression line, scatter plot, and confidence band. 
+        The color to use for the regression line, scatter plot, and confidence band.
         If None, the next available color in the current axis will be used. Default is None.
-    
+
     annotation_pos : str, optional
         The position of the regression statistics annotation in the plot, specified as
         "vertical horizontal", where vertical can be "lower", "center", or "upper", and
@@ -65,6 +66,11 @@ def lm(
         xbounds = [np.min(x), np.max(x)]
     if ybounds is None:
         ybounds = [np.min(y), np.max(y)]
+
+    if isinstance(x, pd.core.series.Series):
+        x = x.values
+    if isinstance(y, pd.core.series.Series):
+        y = y.values
 
     # Run Regression
     X = sm.add_constant(x)
@@ -112,9 +118,10 @@ def lm(
     )
 
     # Annotation
+    print(p_values)
     annotation_text = (
-        r"$\beta_0$ = " + f"{intercept:.2f} ({format_p(p_values.iloc[0])})\n"
-        r"$\beta$ = " + f"{slope:.2f} ({format_p(p_values.iloc[1])})\n"
+        r"$\beta_0$ = " + f"{intercept:.2f} ({format_p(p_values[0])})\n"
+        r"$\beta$ = " + f"{slope:.2f} ({format_p(p_values[1])})\n"
         r"$r$ = " + f"{correlation:.2f} ({format_p(corr_p_value)})"
     )
     apos_vertical, apos_horizontal = annotation_pos.split()
