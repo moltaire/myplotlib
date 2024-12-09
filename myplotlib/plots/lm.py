@@ -15,7 +15,7 @@ def lm(
     ybounds=None,
     ci_alpha=0.05,
     color=None,
-    annotation_pos="lower right",
+    annotation_pos="auto",
     annotate=["b0", "b1", "r"],
 ):
     """
@@ -52,7 +52,8 @@ def lm(
     annotation_pos : str, optional
         Position of the annotation in the plot, specified as "vertical horizontal"
         (e.g., "lower right"). Vertical options: "lower", "center", "upper".
-        Horizontal options: "left", "center", "right". Default is "lower right".
+        Horizontal options: "left", "center", "right". Default is "auto", where it tries
+        to find the best corner on its own.
 
     annotate : list of str, optional
         List specifying which statistics to include in the annotation. Possible values:
