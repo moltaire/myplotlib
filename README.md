@@ -34,6 +34,12 @@ A combination of different plot types. The inset boxplot displays the confidence
 
 This plot runs a linear regression using `statsmodels` and annotates the plot with intercept $\beta_0$, slope $\beta$, and product-moment correlation coefficient $r$.
 
+### Difference plot
+
+This plot illustrates differences of paired data as line plots (bottom panel) and shows the distribution of difference scores (upper panel).
+
+![lm](examples/difference.png)
+
 ### Interaction plot
 
 ![lm](examples/interaction.png)
