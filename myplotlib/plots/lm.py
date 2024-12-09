@@ -141,6 +141,8 @@ def lm(
     )
 
     # Position Annotation
+    if annotation_pos == "auto":
+        annotation_pos = find_best_corner(x, y, ax)
     apos_vertical, apos_horizontal = annotation_pos.split()
     if apos_vertical == "lower":
         y_pos = 0.05
@@ -225,3 +227,48 @@ def generate_annotation(
     if "r" in annotate:
         annotations.append(rf"$r$ = {correlation:.2f} ({format_p(corr_p_value)})")
     return "\n".join(annotations)
+
+
+
+def find_best_corner(x, y, ax):
+    """
+    Determines the best corner of the plot to place an annotation
+    such that it overlaps the least with the data points.
+
+    Parameters:
+    - x: array-like, x-coordinates of the data points.
+    - y: array-like, y-coordinates of the data points.
+    - ax: Matplotlib Axes object, the axis where the scatter plot is drawn.
+
+    Returns:
+    - best_corner: str, the name of the best corner.
+    """
+    # Get plot limits
+    x_min, x_max = ax.get_xlim()
+    y_min, y_max = ax.get_ylim()
+
+    # Define the four corners
+    corners = {
+        "top left": (x_min, y_max),
+        "top right": (x_max, y_max),
+        "bottom left": (x_min, y_min),
+        "bottom right": (x_max, y_min),
+    }
+
+    # Calculate the number of points in each corner region
+    counts = {}
+    for corner, (cx, cy) in corners.items():
+        if "top" in corner:
+            y_condition = y > (y_max + y_min) / 2
+        else:
+            y_condition = y <= (y_max + y_min) / 2
+        if "right" in corner:
+            x_condition = x > (x_max + x_min) / 2
+        else:
+            x_condition = x <= (x_max + x_min) / 2
+
+        counts[corner] = np.sum(x_condition & y_condition)
+
+    # Find the least populated corner
+    best_corner = min(counts, key=counts.get)
+    return best_corner
