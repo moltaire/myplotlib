@@ -124,7 +124,7 @@ def difference(
     # Upper panel: Histogram of differences
     ax = axs[0]
     if isinstance(bins, int):
-        bins = np.linspace(vmin, vmax, n_bins)
+        bins = np.linspace(vmin, vmax, bins)
     n, bins, patches = ax.hist(diffs, bins=bins, linewidth=0.5, edgecolor="white")
 
     ## Add mean difference
