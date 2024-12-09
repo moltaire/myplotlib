@@ -32,7 +32,7 @@ A combination of different plot types. The inset boxplot displays the confidence
 
 ![lm](examples/lm.png)
 
-This plot runs a linear regression using `statsmodels` and annotates the plot with intercept $\beta_0$, slope $\beta$, and product-moment correlatio coefficient $r$.
+This plot runs a linear regression using `statsmodels` and annotates the plot with intercept $\beta_0$, slope $\beta$, and product-moment correlation coefficient $r$.
 
 ### Interaction plot
 
