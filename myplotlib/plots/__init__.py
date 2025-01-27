@@ -1,3 +1,4 @@
+from .bar import bar
 from .difference import difference
 from .factorial import factorial_heatmap
 from .hist import hist
@@ -10,6 +11,7 @@ from .scatter import scatter
 from .violin import violin
 
 __all__ = [
+    "bar",
     "difference",
     "factorial_heatmap",
     "hist",
