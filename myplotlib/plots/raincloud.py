@@ -6,11 +6,12 @@ from matplotlib.patches import Rectangle
 
 def raincloud(
     df,
-    scatter_kws=dict(dodge=0.25, jitter=0.15, lw=0.25, alpha=0.7, s=6),
+    scatter_kws={},
     violin_kws=dict(alpha=0.5, width=0.5),
     box_kws=dict(lw=0.75, width=0.25, ci_alpha=0.95, capsize=2),
     ax=None,
     colors=None,
+    x=None,
 ):
     """
         Create a composite plot with scatter, violin, and box plots for each column in the input DataFrame.
@@ -66,10 +67,15 @@ def raincloud(
         >>> })
         >>> raincloud(df)
     """
+    scatter_kws = dict(
+        dict(dodge=0.25, jitter=0.15, lw=0.25, alpha=0.7, s=6), **scatter_kws
+    )
+
     if ax is None:
         ax = plt.gca()
 
-    x = range(len(df.columns))
+    if x is None:
+        x = range(len(df.columns))
 
     if colors is None:
         colors = [f"C{i}" for i in x]
